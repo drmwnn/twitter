@@ -14,4 +14,10 @@ class UIConstants {
       centerTitle: true,
     );
   }
+
+  static List<Widget> bottonTabBarPages = [
+    Text('Feed Screen'),
+    Text('Search Screen'),
+    Text('Notification Screen'),
+  ];
 }
