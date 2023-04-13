@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:twitter/theme/pallete.dart';
+import 'package:twitter/common/rounded_small_button.dart';
 
 class CreateTweetScreen extends ConsumerStatefulWidget {
   static route() => MaterialPageRoute(
@@ -20,6 +22,27 @@ class _CreateTweetScreenState extends ConsumerState<CreateTweetScreen> {
         leading: IconButton(
           onPressed: () {},
           icon: const Icon(Icons.close, size: 30),
+        ),
+        actions: [
+          RoundSmallButton(
+            onTap: () {},
+            label: 'Tweet',
+            backgroundColor: Pallete.blueColor,
+            textColor: Pallete.whiteColor,
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children:[
+              Row(
+                children: [
+                  
+                ]
+              )
+            ],
+          )
         ),
       ),
     );
