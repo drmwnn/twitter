@@ -9,25 +9,36 @@ import 'package:twitter/features/home/view/home_view.dart';
 import 'package:twitter/models/user_model.dart';
 
 final authControllerProvider =
-    StateNotifierProvider<AuthControrller, bool>((ref) {
-  return AuthControrller(
-    AuthAPI: ref.watch(authAPIProvider),
+    StateNotifierProvider<AuthController, bool>((ref) {
+  return AuthController(
+    authAPI: ref.watch(authAPIProvider),
     userAPI: ref.watch(userAPIProvider),
   );
 });
 
-final currentUserAccountProvider = FutureProvider((ref) async {
+final currentUserDetailsProvider = FutureProvider((ref) {
+  final currentUserId = ref.watch(currentUserAccountProvider).value!.$id;
+  final userDetails = ref.watch(userDetailsProvider(currentUserId));
+  return userDetails.value;
+});
+
+final userDetailsProvider = FutureProvider.family((ref, String uid) {
+  final authController = ref.watch(authControllerProvider.notifier);
+  return authController.getUserData(uid);
+});
+
+final currentUserAccountProvider = FutureProvider((ref) {
   final authController = ref.watch(authControllerProvider.notifier);
   return authController.currentUser();
 });
 
-class AuthControrller extends StateNotifier<bool> {
+class AuthController extends StateNotifier<bool> {
   final AuthAPI _authAPI;
   final UserAPI _userAPI;
-  AuthControrller({
-    required AuthAPI AuthAPI,
+  AuthController({
+    required AuthAPI authAPI,
     required UserAPI userAPI,
-  })  : _authAPI = AuthAPI,
+  })  : _authAPI = authAPI,
         _userAPI = userAPI,
         super(false);
   //state = isLoading
@@ -55,7 +66,7 @@ class AuthControrller extends StateNotifier<bool> {
           following: const [],
           profilePic: '',
           bannerPic: '',
-          uid: '',
+          uid: r.$id,
           bio: '',
           isTwitterBlue: false,
         );
@@ -79,8 +90,17 @@ class AuthControrller extends StateNotifier<bool> {
       password: password,
     );
     state = false;
-    res.fold((l) => showSnackBar(context, l.message), (r) {
-      Navigator.push(context, HomeView.route());
-    });
+    res.fold(
+      (l) => showSnackBar(context, l.message),
+      (r) {
+        Navigator.push(context, HomeView.route());
+      },
+    );
+  }
+
+  Future<UserModel> getUserData(String uid) async {
+    final document =  await _userAPI.getUserData(uid);
+    final updatedUser = UserModel.fromMap(document.data);
+    return updatedUser;
   }
 }
