@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -61,37 +62,55 @@ class _CreateTweetScreenState extends ConsumerState<CreateTweetScreen> {
           ? const Loader()
           : SafeArea(
               child: SingleChildScrollView(
-                  child: Column(
-                children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundImage: NetworkImage(currentUser.profilePic),
-                        radius: 30,
-                      ),
-                      const SizedBox(width: 15),
-                      Expanded(
-                        child: TextField(
-                          controller: tweetTextController,
-                          style: const TextStyle(
-                            fontSize: 22,
-                          ),
-                          decoration: const InputDecoration(
-                            hintText: "What's happening?",
-                            hintStyle: TextStyle(
-                              color: Pallete.greyColor,
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(currentUser.profilePic),
+                          radius: 30,
+                        ),
+                        const SizedBox(width: 15),
+                        Expanded(
+                          child: TextField(
+                            controller: tweetTextController,
+                            style: const TextStyle(
                               fontSize: 22,
-                              fontWeight: FontWeight.w600,
                             ),
-                            border: InputBorder.none,
+                            decoration: const InputDecoration(
+                              hintText: "What's happening?",
+                              hintStyle: TextStyle(
+                                color: Pallete.greyColor,
+                                fontSize: 22,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              border: InputBorder.none,
+                            ),
+                            maxLines: null,
                           ),
-                          maxLines: null,
+                        ),
+                      ],
+                    ),
+                    if (images.isNotEmpty)
+                      CarouselSlider(
+                        items: images.map(
+                          (file) {
+                            return Container(
+                              width: MediaQuery.of(context).size.width,
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: 5,
+                              ),
+                              child: Image.file(file));
+                          },
+                        ).toList(),
+                        options: CarouselOptions(
+                          height: 400,
+                          enableInfiniteScroll: false,
                         ),
                       ),
-                    ],
-                  )
-                ],
-              )),
+                  ],
+                ),
+              ),
             ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.only(bottom: 10),

@@ -41,6 +41,7 @@ dependencies:
   flutter_svg: ^2.0.4
   model: ^0.1.3
   image_picker: ^0.8.7+4
+  carousel_slider: ^4.2.1
 
 dev_dependencies:
   flutter_test:
