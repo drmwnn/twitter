@@ -4,4 +4,5 @@ class AppwriterConstants {
   static const String endPoint = 'http://192.168.100.33/v1';
 
   static const String userCollection = '643503943aff5133a06f';
+  static const String tweetsCollection = '643d9a7199df44ef48db';
 }
