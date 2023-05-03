@@ -39,6 +39,7 @@ class _CreateTweetScreenState extends ConsumerState<CreateTweetScreen> {
           text: tweetTextController.text,
           context: context,
         );
+    Navigator.pop(context);
   }
 
   void onPickImages() async {
@@ -106,11 +107,11 @@ class _CreateTweetScreenState extends ConsumerState<CreateTweetScreen> {
                         items: images.map(
                           (file) {
                             return Container(
-                              width: MediaQuery.of(context).size.width,
-                              margin: const EdgeInsets.symmetric(
-                                horizontal: 5,
-                              ),
-                              child: Image.file(file));
+                                width: MediaQuery.of(context).size.width,
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 5,
+                                ),
+                                child: Image.file(file));
                           },
                         ).toList(),
                         options: CarouselOptions(

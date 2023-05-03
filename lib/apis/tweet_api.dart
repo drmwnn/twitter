@@ -52,9 +52,11 @@ class TweetAPI implements ITweetAPI {
   @override
   Future<List<Document>> getTweets() async {
     final documents = await _db.listDocuments(
-      databaseId: AppwriterConstants.databaseId,
-      collectionId: AppwriterConstants.tweetsCollection,
-    );
+        databaseId: AppwriterConstants.databaseId,
+        collectionId: AppwriterConstants.tweetsCollection,
+        queries: [
+          Query.orderDesc('tweetedAt'),
+        ]);
     return documents.documents;
   }
 
