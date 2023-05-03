@@ -111,15 +111,21 @@ class TweetCard extends ConsumerWidget {
                                   onPressed: () {},
                                   icon: const Icon(
                                     Icons.share_outlined,
+                                    size: 25,
+                                    color: Pallete.greyColor,
                                   ),
                                 )
                               ],
                             ),
-                          )
+                          ),
+                          const SizedBox(height: 1),
                         ],
                       ),
                     ),
                   ],
+                ),
+                const Divider(
+                  color: Pallete.greyColor,
                 ),
               ],
             );
