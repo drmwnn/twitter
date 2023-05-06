@@ -23,9 +23,14 @@ class TwitterReplyScreen extends ConsumerWidget {
       ),
       body: Column(
         children: [
-          TweetCard(tweet: tweet)
+          TweetCard(tweet: tweet),
         ],
       ),
+      bottomNavigationBar: TextField(
+        decoration: InputDecoration(
+          hintText: 'Tweet your reply',
+        ),
+      )
     );
   }
 }
