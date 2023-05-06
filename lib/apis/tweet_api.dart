@@ -17,9 +17,10 @@ final tweetAPIProvider = Provider((ref) {
 abstract class ITweetAPI {
   FutureEither<Document> shareTweet(Tweet tweet);
   Future<List<Document>> getTweets();
-  Stream<RealtimeMessage> getTweetsStream();
+  Stream<RealtimeMessage> getLatestTweet();
   FutureEither<Document> likeTweet(Tweet tweet);
   FutureEither<Document> updateReshareCount(Tweet tweet);
+  Future<List<Document>> getRepliesToTweet(Tweet tweet);
 }
 
 class TweetAPI implements ITweetAPI {
@@ -63,7 +64,7 @@ class TweetAPI implements ITweetAPI {
   }
 
   @override
-  Stream<RealtimeMessage> getTweetsStream() {
+  Stream<RealtimeMessage> getLatestTweet() {
     return _realtime.subscribe([
       'databases.${AppwriterConstants.databaseId}.collections.${AppwriterConstants.tweetsCollection}.documents'
     ]).stream;
@@ -115,5 +116,17 @@ class TweetAPI implements ITweetAPI {
     } catch (e, st) {
       return left(Failure(e.toString(), st));
     }
+  }
+
+  @override
+  Future<List<Document>> getRepliesToTweet(Tweet tweet) async {
+    final document = await _db.listDocuments(
+      databaseId: AppwriterConstants.databaseId,
+      collectionId: AppwriterConstants.tweetsCollection,
+      queries: [
+        Query.equal('repliedTo', tweet.id),
+      ],
+    );
+    return document.documents;
   }
 }
