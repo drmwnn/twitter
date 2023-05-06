@@ -204,5 +204,4 @@ class TweetController extends StateNotifier<bool> {
     }
     return hashtags;
   }
-
 }
