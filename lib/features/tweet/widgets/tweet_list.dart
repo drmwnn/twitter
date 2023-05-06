@@ -23,13 +23,14 @@ class TweetList extends ConsumerWidget {
                     } else if (data.events.contains(
                       'databases.*.collections.${AppwriterConstants.tweetsCollection}.documents.*.update',
                     )) {
+                      print(data.events[0]);
                       //get id of the tweet
                       final startingPoint =
                           data.events[0].lastIndexOf('documents.');
                       final endPoint = data.events[0].lastIndexOf('.update');
                       final tweetId = data.events[0]
                           .substring(startingPoint + 10, endPoint);
-
+                      print(tweetId);
                       var tweet = tweets
                           .where((element) => element.id == tweetId)
                           .first;
