@@ -4,7 +4,7 @@ import 'package:twitter/models/user_model.dart';
 
 final exploreControllerProvider = StateNotifierProvider((ref) {
   return ExploreController(
-    UserAPI: ref.watch(userAPIProvider),
+    userAPI: ref.watch(userAPIProvider),
   );
 });
 
@@ -16,8 +16,8 @@ final searchUserProvider = FutureProvider.family((ref, String name) async {
 class ExploreController extends StateNotifier<bool> {
   final UserAPI _userAPI;
   ExploreController({
-    required UserAPI UserAPI,
-  })  : _userAPI = UserAPI,
+    required UserAPI userAPI,
+  })  : _userAPI = userAPI,
         super(false);
 
   Future<List<UserModel>> searchUser(String name) async {

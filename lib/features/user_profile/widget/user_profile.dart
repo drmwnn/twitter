@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter/common/common.dart';
 import 'package:twitter/features/auth/controller/auth_controller.dart';
+import 'package:twitter/features/tweet/widgets/tweet_card.dart';
+import 'package:twitter/features/user_profile/controller/user_profil_controller.dart';
 import 'package:twitter/features/user_profile/widget/follow_count.dart';
 import 'package:twitter/models/user_model.dart';
 import 'package:twitter/theme/pallete.dart';
@@ -107,14 +109,32 @@ class UserProfile extends ConsumerWidget {
                               text: 'Followers',
                             ),
                           ],
-                        )
+                        ),
+                        const SizedBox(height: 2),
+                        const Divider(color: Pallete.whiteColor),
                       ],
                     ),
                   ),
                 ),
               ];
             },
-            body: Container(),
+            body: ref.watch(getUserTweetsProvider(user.uid)).when(
+                  data: (tweets) {
+                    //can make it realtime by copying code
+                    //from twitter_reply_view
+                    return ListView.builder(
+                      itemCount: tweets.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final tweet = tweets[index];
+                        return TweetCard(tweet: tweet);
+                      },
+                    );
+                  },
+                  error: (error, st) => ErrorText(
+                    error: error.toString(),
+                  ),
+                  loading: () => const Loader(),
+                ),
           );
   }
 }
