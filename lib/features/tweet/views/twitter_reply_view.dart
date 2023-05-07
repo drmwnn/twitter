@@ -31,6 +31,7 @@ class TwitterReplyScreen extends ConsumerWidget {
                   data: (tweets) {
                     return ref.watch(getLatestTweetProvider).when(
                           data: (data) {
+                            print(data);
                             if (data.events.contains(
                               'databases.*.collections.${AppwriterConstants.tweetsCollection}.documents.*.create',
                             )) {
