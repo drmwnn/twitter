@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter/common/common.dart';
 import 'package:twitter/features/auth/controller/auth_controller.dart';
+import 'package:twitter/features/user_profile/widget/follow_count.dart';
 import 'package:twitter/models/user_model.dart';
 import 'package:twitter/theme/pallete.dart';
 
@@ -94,6 +95,19 @@ class UserProfile extends ConsumerWidget {
                           ),
                         ),
                         const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            FollowCount(
+                              count: user.following.length,
+                              text: 'Following',
+                            ),
+                            const SizedBox(width: 15),
+                            FollowCount(
+                              count: user.followers.length,
+                              text: 'Followers',
+                            ),
+                          ],
+                        )
                       ],
                     ),
                   ),
