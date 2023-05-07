@@ -67,7 +67,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(currentUserDetailsProvider).value;
-    final isLoading = ref.watch(userProfilControllerProvider);
+    final isLoading = ref.watch(userProfileControllerProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Profile'),
@@ -75,7 +75,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
         actions: [
           TextButton(
             onPressed: () {
-              ref.read(userProfilControllerProvider.notifier).updateUserProfile(
+              ref.read(userProfileControllerProvider.notifier).updateUserProfile(
                     userModel: user!.copyWith(
                       bio: bioController.text,
                       name: nameController.text,
