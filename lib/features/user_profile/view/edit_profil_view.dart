@@ -21,6 +21,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
   final nameController = TextEditingController();
   final bioController = TextEditingController();
   File? bannerFile;
+  File? profileFile;
 
   @override
   void dispose() {
@@ -35,6 +36,17 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
       setState(
         () {
           bannerFile = banner;
+        },
+      );
+    }
+  }
+
+  void selectProfileImage() async {
+    final profileImage = await pickImage();
+    if (profileImage != null) {
+      setState(
+        () {
+          profileFile = profileImage;
         },
       );
     }
@@ -71,20 +83,35 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: bannerFile != null
-                              ? Image.file(bannerFile!)
+                              ? Image.file(
+                                  bannerFile!,
+                                  fit: BoxFit.fitWidth,
+                                )
                               : user.bannerPic.isEmpty
                                   ? Container(
                                       color: Pallete.blueColor,
                                     )
-                                  : Image.network(user.bannerPic),
+                                  : Image.network(
+                                      user.bannerPic,
+                                      fit: BoxFit.fitHeight,
+                                    ),
                         ),
                       ),
                       Positioned(
                         bottom: 20,
                         left: 20,
-                        child: CircleAvatar(
-                          backgroundImage: NetworkImage(user.profilePic),
-                          radius: 40,
+                        child: GestureDetector(
+                          onTap: selectProfileImage,
+                          child: profileFile != null
+                              ? CircleAvatar(
+                                  backgroundImage: FileImage(profileFile!),
+                                  radius: 40,
+                                )
+                              : CircleAvatar(
+                                  backgroundImage:
+                                      NetworkImage(user.profilePic),
+                                  radius: 40,
+                                ),
                         ),
                       ),
                     ],
