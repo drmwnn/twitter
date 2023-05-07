@@ -31,32 +31,44 @@ class TwitterReplyScreen extends ConsumerWidget {
                   data: (tweets) {
                     return ref.watch(getLatestTweetProvider).when(
                           data: (data) {
-                            print(data);
-                            if (data.events.contains(
-                              'databases.*.collections.${AppwriterConstants.tweetsCollection}.documents.*.create',
-                            )) {
-                              tweets.insert(0, Tweet.fromMap(data.payload));
-                            } else if (data.events.contains(
-                              'databases.*.collections.${AppwriterConstants.tweetsCollection}.documents.*.update',
-                            )) {
-                              //get id of the tweet
-                              final startingPoint =
-                                  data.events[0].lastIndexOf('documents.');
-                              final endPoint =
-                                  data.events[0].lastIndexOf('.update');
-                              final tweetId = data.events[0]
-                                  .substring(startingPoint + 10, endPoint);
+                            final latestTweet = Tweet.fromMap(data.payload);
 
-                              var tweet = tweets
-                                  .where((element) => element.id == tweetId)
-                                  .first;
+                            bool isTweetAlreadyPresent = false;
+                            for (final tweetModel in tweets) {
+                              if (tweetModel.id == latestTweet.id) {
+                                isTweetAlreadyPresent = true;
+                                break;
+                              }
+                            }
 
-                              final tweetIndex = tweets.indexOf(tweet);
-                              tweets.removeWhere(
-                                  (element) => element.id == tweetId);
+                            if (!isTweetAlreadyPresent &&
+                                latestTweet.repliedTo == tweet.id) {
+                              if (data.events.contains(
+                                'databases.*.collections.${AppwriterConstants.tweetsCollection}.documents.*.create',
+                              )) {
+                                tweets.insert(0, Tweet.fromMap(data.payload));
+                              } else if (data.events.contains(
+                                'databases.*.collections.${AppwriterConstants.tweetsCollection}.documents.*.update',
+                              )) {
+                                //get id of the tweet
+                                final startingPoint =
+                                    data.events[0].lastIndexOf('documents.');
+                                final endPoint =
+                                    data.events[0].lastIndexOf('.update');
+                                final tweetId = data.events[0]
+                                    .substring(startingPoint + 10, endPoint);
 
-                              tweet = Tweet.fromMap(data.payload);
-                              tweets.insert(tweetIndex, tweet);
+                                var tweet = tweets
+                                    .where((element) => element.id == tweetId)
+                                    .first;
+
+                                final tweetIndex = tweets.indexOf(tweet);
+                                tweets.removeWhere(
+                                    (element) => element.id == tweetId);
+
+                                tweet = Tweet.fromMap(data.payload);
+                                tweets.insert(tweetIndex, tweet);
+                              }
                             }
 
                             return Expanded(
