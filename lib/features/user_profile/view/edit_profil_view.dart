@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter/common/common.dart';
 import 'package:twitter/core/utils.dart';
 import 'package:twitter/features/auth/controller/auth_controller.dart';
+import 'package:twitter/features/user_profile/controller/user_profil_controller.dart';
 import 'package:twitter/theme/theme.dart';
 
 class EditProfileView extends ConsumerStatefulWidget {
@@ -55,18 +56,26 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(currentUserDetailsProvider).value;
+    final isLoading = ref.watch(userProfilControllerProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Profile'),
         centerTitle: false,
         actions: [
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              ref.read(userProfilControllerProvider.notifier).updateUserProfile(
+                    userModel: user!,
+                    context: context,
+                    bannerFile: bannerFile,
+                    profileFile: profileFile,
+                  );
+            },
             child: const Text('Save'),
           ),
         ],
       ),
-      body: user == null
+      body: isLoading || user == null
           ? const Loader()
           : Column(
               children: [
