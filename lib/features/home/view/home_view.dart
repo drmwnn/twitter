@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:twitter/constants/constants.dart';
 import 'package:twitter/features/tweet/views/create_tweet_view.dart';
@@ -11,6 +10,7 @@ class HomeView extends StatefulWidget {
         builder: (context) => const HomeView(),
       );
   const HomeView({super.key});
+  
   @override
   State<HomeView> createState() => _HomeViewState();
 }
