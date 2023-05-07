@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter/common/common.dart';
+import 'package:twitter/core/utils.dart';
 import 'package:twitter/features/auth/controller/auth_controller.dart';
 import 'package:twitter/theme/theme.dart';
 
@@ -18,6 +20,7 @@ class EditProfileView extends ConsumerStatefulWidget {
 class _EditProfileViewState extends ConsumerState<EditProfileView> {
   final nameController = TextEditingController();
   final bioController = TextEditingController();
+  File? bannerFile;
 
   @override
   void dispose() {
@@ -26,10 +29,31 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     bioController.dispose();
   }
 
+  void selectBannerImage() async {
+    final banner = await pickImage();
+    if (banner != null) {
+      setState(
+        () {
+          bannerFile = banner;
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(currentUserDetailsProvider).value;
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Edit Profile'),
+        centerTitle: false,
+        actions: [
+          TextButton(
+            onPressed: () {},
+            child: const Text('Save'),
+          ),
+        ],
+      ),
       body: user == null
           ? const Loader()
           : Column(
@@ -38,17 +62,22 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
                   height: 200,
                   child: Stack(
                     children: [
-                      Container(
-                        width: double.infinity,
-                        height: 150,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
+                      GestureDetector(
+                        onTap: selectBannerImage,
+                        child: Container(
+                          width: double.infinity,
+                          height: 150,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: bannerFile != null
+                              ? Image.file(bannerFile!)
+                              : user.bannerPic.isEmpty
+                                  ? Container(
+                                      color: Pallete.blueColor,
+                                    )
+                                  : Image.network(user.bannerPic),
                         ),
-                        child: user.bannerPic.isEmpty
-                            ? Container(
-                                color: Pallete.blueColor,
-                              )
-                            : Image.network(user.bannerPic),
                       ),
                       Positioned(
                         bottom: 20,
@@ -70,11 +99,12 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
                 ),
                 const SizedBox(height: 20),
                 TextField(
-                  controller: nameController,
+                  controller: bioController,
                   decoration: const InputDecoration(
-                    hintText: 'Name',
+                    hintText: 'Bio',
                     contentPadding: EdgeInsets.all(18),
                   ),
+                  maxLines: 4,
                 ),
               ],
             ),
