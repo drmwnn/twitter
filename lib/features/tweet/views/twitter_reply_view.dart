@@ -58,24 +58,28 @@ class TwitterReplyScreen extends ConsumerWidget {
                               tweets.insert(tweetIndex, tweet);
                             }
 
-                            return ListView.builder(
-                              itemCount: tweets.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                final tweet = tweets[index];
-                                return TweetCard(tweet: tweet);
-                              },
+                            return Expanded(
+                              child: ListView.builder(
+                                itemCount: tweets.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final tweet = tweets[index];
+                                  return TweetCard(tweet: tweet);
+                                },
+                              ),
                             );
                           },
                           error: (error, StackTrace) => ErrorText(
                             error: error.toString(),
                           ),
                           loading: () {
-                            return ListView.builder(
-                              itemCount: tweets.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                final tweet = tweets[index];
-                                return TweetCard(tweet: tweet);
-                              },
+                            return Expanded(
+                              child: ListView.builder(
+                                itemCount: tweets.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final tweet = tweets[index];
+                                  return TweetCard(tweet: tweet);
+                                },
+                              ),
                             );
                           },
                         );
