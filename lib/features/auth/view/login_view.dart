@@ -1,18 +1,18 @@
-// ignore_for_file: invalid_use_of_protected_member
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter/common/loading_page.dart';
+import 'package:twitter/common/rounded_small_button.dart';
 import 'package:twitter/constants/constants.dart';
 import 'package:twitter/features/auth/controller/auth_controller.dart';
 import 'package:twitter/features/auth/view/signup_view.dart';
 import 'package:twitter/features/auth/widgets/auth_field.dart';
-import 'package:twitter/common/rounded_small_button.dart';
 import 'package:twitter/theme/pallete.dart';
 
 class LoginView extends ConsumerStatefulWidget {
-  static route() => MaterialPageRoute(builder: (context) => const LoginView());
+  static route() => MaterialPageRoute(
+        builder: (context) => const LoginView(),
+      );
   const LoginView({super.key});
 
   @override
@@ -33,14 +33,16 @@ class _LoginViewState extends ConsumerState<LoginView> {
 
   void onLogin() {
     ref.read(authControllerProvider.notifier).login(
-        email: emailController.text,
-        password: passwordController.text,
-        context: context);
+          email: emailController.text,
+          password: passwordController.text,
+          context: context,
+        );
   }
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = ref.watch(authControllerProvider.notifier).state;
+    final isLoading = ref.watch(authControllerProvider);
+
     return Scaffold(
       appBar: appbar,
       body: isLoading
@@ -48,18 +50,23 @@ class _LoginViewState extends ConsumerState<LoginView> {
           : Center(
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
-                      //textfield1
-                      AuthField(controller: emailController, hintText: 'Email'),
+                      // textfield 1
+                      AuthField(
+                        controller: emailController,
+                        hintText: 'Email',
+                      ),
                       const SizedBox(height: 25),
                       AuthField(
-                          controller: passwordController, hintText: 'Password'),
+                        controller: passwordController,
+                        hintText: 'Password',
+                      ),
                       const SizedBox(height: 40),
                       Align(
                         alignment: Alignment.topRight,
-                        child: RoundSmallButton(
+                        child: RoundedSmallButton(
                           onTap: onLogin,
                           label: 'Done',
                         ),
@@ -67,13 +74,13 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       const SizedBox(height: 40),
                       RichText(
                         text: TextSpan(
-                          text: "Don't have an account? ",
+                          text: "Don't have an account?",
                           style: const TextStyle(
                             fontSize: 16,
                           ),
                           children: [
                             TextSpan(
-                              text: 'Sign up',
+                              text: ' Sign up',
                               style: const TextStyle(
                                 color: Pallete.blueColor,
                                 fontSize: 16,

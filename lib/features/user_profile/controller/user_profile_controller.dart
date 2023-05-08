@@ -4,16 +4,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter/apis/storage_api.dart';
 import 'package:twitter/apis/tweet_api.dart';
 import 'package:twitter/apis/user_api.dart';
+import 'package:twitter/core/enums/notification_type_enum.dart';
 import 'package:twitter/core/utils.dart';
+import 'package:twitter/features/notifications/controller/notification_controller.dart';
 import 'package:twitter/models/tweet_model.dart';
 import 'package:twitter/models/user_model.dart';
 
 final userProfileControllerProvider =
-    StateNotifierProvider<UserProfilController, bool>((ref) {
-  return UserProfilController(
+    StateNotifierProvider<UserProfileController, bool>((ref) {
+  return UserProfileController(
     tweetAPI: ref.watch(tweetAPIProvider),
     storageAPI: ref.watch(storageAPIProvider),
     userAPI: ref.watch(userAPIProvider),
+    notificationController: ref.watch(notificationControllerProvider.notifier),
   );
 });
 
@@ -28,17 +31,20 @@ final getLatestUserProfileDataProvider = StreamProvider((ref) {
   return userAPI.getLatestUserProfileData();
 });
 
-class UserProfilController extends StateNotifier<bool> {
+class UserProfileController extends StateNotifier<bool> {
   final TweetAPI _tweetAPI;
   final StorageAPI _storageAPI;
   final UserAPI _userAPI;
-  UserProfilController({
+  final NotificationController _notificationController;
+  UserProfileController({
     required TweetAPI tweetAPI,
     required StorageAPI storageAPI,
     required UserAPI userAPI,
+    required NotificationController notificationController,
   })  : _tweetAPI = tweetAPI,
         _storageAPI = storageAPI,
         _userAPI = userAPI,
+        _notificationController = notificationController,
         super(false);
 
   Future<List<Tweet>> getUserTweets(String uid) async {
@@ -80,7 +86,7 @@ class UserProfilController extends StateNotifier<bool> {
     required BuildContext context,
     required UserModel currentUser,
   }) async {
-    //already following
+    // already following
     if (currentUser.following.contains(user.uid)) {
       user.followers.remove(currentUser.uid);
       currentUser.following.remove(user.uid);
@@ -97,7 +103,14 @@ class UserProfilController extends StateNotifier<bool> {
     final res = await _userAPI.followUser(user);
     res.fold((l) => showSnackBar(context, l.message), (r) async {
       final res2 = await _userAPI.addToFollowing(currentUser);
-      res2.fold((l) => showSnackBar(context, l.message), (r) => null);
+      res2.fold((l) => showSnackBar(context, l.message), (r) {
+        _notificationController.createNotification(
+          text: '${currentUser.name} followed you!',
+          postId: '',
+          notificationType: NotificationType.follow,
+          uid: user.uid,
+        );
+      });
     });
   }
 }

@@ -3,14 +3,14 @@ import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:twitter/common/loading_page.dart';
-import 'package:twitter/constants/assets_constant.dart';
+import 'package:twitter/common/rounded_small_button.dart';
+import 'package:twitter/constants/assets_constants.dart';
 import 'package:twitter/core/utils.dart';
 import 'package:twitter/features/auth/controller/auth_controller.dart';
 import 'package:twitter/features/tweet/controller/tweet_controller.dart';
 import 'package:twitter/theme/pallete.dart';
-import 'package:twitter/common/rounded_small_button.dart';
 
 class CreateTweetScreen extends ConsumerStatefulWidget {
   static route() => MaterialPageRoute(
@@ -39,6 +39,7 @@ class _CreateTweetScreenState extends ConsumerState<CreateTweetScreen> {
           text: tweetTextController.text,
           context: context,
           repliedTo: '',
+          repliedToUserId: '',
         );
     Navigator.pop(context);
   }
@@ -62,7 +63,7 @@ class _CreateTweetScreenState extends ConsumerState<CreateTweetScreen> {
           icon: const Icon(Icons.close, size: 30),
         ),
         actions: [
-          RoundSmallButton(
+          RoundedSmallButton(
             onTap: shareTweet,
             label: 'Tweet',
             backgroundColor: Pallete.blueColor,
@@ -108,11 +109,12 @@ class _CreateTweetScreenState extends ConsumerState<CreateTweetScreen> {
                         items: images.map(
                           (file) {
                             return Container(
-                                width: MediaQuery.of(context).size.width,
-                                margin: const EdgeInsets.symmetric(
-                                  horizontal: 5,
-                                ),
-                                child: Image.file(file));
+                              width: MediaQuery.of(context).size.width,
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: 5,
+                              ),
+                              child: Image.file(file),
+                            );
                           },
                         ).toList(),
                         options: CarouselOptions(
@@ -128,10 +130,11 @@ class _CreateTweetScreenState extends ConsumerState<CreateTweetScreen> {
         padding: const EdgeInsets.only(bottom: 10),
         decoration: const BoxDecoration(
           border: Border(
-              top: BorderSide(
-            color: Pallete.greyColor,
-            width: 0.3,
-          )),
+            top: BorderSide(
+              color: Pallete.greyColor,
+              width: 0.3,
+            ),
+          ),
         ),
         child: Row(
           children: [

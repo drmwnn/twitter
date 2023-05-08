@@ -1,5 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:twitter/theme/theme.dart';
+import 'package:twitter/features/tweet/views/hashtag_view.dart';
+import 'package:twitter/theme/pallete.dart';
 
 class HashtagText extends StatelessWidget {
   final String text;
@@ -22,6 +24,13 @@ class HashtagText extends StatelessWidget {
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                Navigator.push(
+                  context,
+                  HashtagView.route(element),
+                );
+              },
           ),
         );
       } else if (element.startsWith('www.') || element.startsWith('https://')) {
@@ -45,10 +54,11 @@ class HashtagText extends StatelessWidget {
         );
       }
     });
+
     return RichText(
       text: TextSpan(
         children: textspans,
-        ),
-      );
+      ),
+    );
   }
 }

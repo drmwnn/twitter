@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:twitter/common/common.dart';
+import 'package:twitter/common/error_page.dart';
+import 'package:twitter/common/loading_page.dart';
 import 'package:twitter/features/explore/controller/explore_controller.dart';
 import 'package:twitter/features/explore/widgets/search_tile.dart';
 import 'package:twitter/theme/pallete.dart';
@@ -22,8 +23,9 @@ class _ExploreViewState extends ConsumerState<ExploreView> {
     searchController.dispose();
   }
 
+  @override
   Widget build(BuildContext context) {
-    final AppBarTextFieldBorder = OutlineInputBorder(
+    final appBarTextFieldBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(50),
       borderSide: const BorderSide(
         color: Pallete.searchBarColor,
@@ -46,9 +48,9 @@ class _ExploreViewState extends ConsumerState<ExploreView> {
               ),
               fillColor: Pallete.searchBarColor,
               filled: true,
-              enabledBorder: AppBarTextFieldBorder,
-              focusedBorder: AppBarTextFieldBorder,
-              hintText: 'Search twitter',
+              enabledBorder: appBarTextFieldBorder,
+              focusedBorder: appBarTextFieldBorder,
+              hintText: 'Search Twitter',
             ),
           ),
         ),

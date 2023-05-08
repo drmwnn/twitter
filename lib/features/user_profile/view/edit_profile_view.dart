@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:twitter/common/common.dart';
+import 'package:twitter/common/loading_page.dart';
 import 'package:twitter/core/utils.dart';
 import 'package:twitter/features/auth/controller/auth_controller.dart';
-import 'package:twitter/features/user_profile/controller/user_profil_controller.dart';
+import 'package:twitter/features/user_profile/controller/user_profile_controller.dart';
 import 'package:twitter/theme/theme.dart';
 
 class EditProfileView extends ConsumerStatefulWidget {
@@ -45,22 +45,18 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
   void selectBannerImage() async {
     final banner = await pickImage();
     if (banner != null) {
-      setState(
-        () {
-          bannerFile = banner;
-        },
-      );
+      setState(() {
+        bannerFile = banner;
+      });
     }
   }
 
   void selectProfileImage() async {
     final profileImage = await pickImage();
     if (profileImage != null) {
-      setState(
-        () {
-          profileFile = profileImage;
-        },
-      );
+      setState(() {
+        profileFile = profileImage;
+      });
     }
   }
 
@@ -68,6 +64,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
   Widget build(BuildContext context) {
     final user = ref.watch(currentUserDetailsProvider).value;
     final isLoading = ref.watch(userProfileControllerProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Profile'),
@@ -75,7 +72,9 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
         actions: [
           TextButton(
             onPressed: () {
-              ref.read(userProfileControllerProvider.notifier).updateUserProfile(
+              ref
+                  .read(userProfileControllerProvider.notifier)
+                  .updateUserProfile(
                     userModel: user!.copyWith(
                       bio: bioController.text,
                       name: nameController.text,
@@ -116,7 +115,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
                                     )
                                   : Image.network(
                                       user.bannerPic,
-                                      fit: BoxFit.fitHeight,
+                                      fit: BoxFit.fitWidth,
                                     ),
                         ),
                       ),

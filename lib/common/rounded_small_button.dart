@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:twitter/theme/theme.dart';
+import 'package:twitter/theme/pallete.dart';
 
-class RoundSmallButton extends StatelessWidget {
+class RoundedSmallButton extends StatelessWidget {
   final VoidCallback onTap;
   final String label;
   final Color backgroundColor;
   final Color textColor;
 
-  const RoundSmallButton({
+  const RoundedSmallButton({
     super.key,
     required this.onTap,
     required this.label,
@@ -18,7 +18,7 @@ class RoundSmallButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap, 
+      onTap: onTap,
       child: Chip(
         label: Text(
           label,
@@ -28,7 +28,10 @@ class RoundSmallButton extends StatelessWidget {
           ),
         ),
         backgroundColor: backgroundColor,
-        labelPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+        labelPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 5,
+        ),
       ),
     );
   }

@@ -1,10 +1,10 @@
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:like_button/like_button.dart';
 import 'package:twitter/common/common.dart';
-import 'package:twitter/constants/assets_constant.dart';
+import 'package:twitter/constants/assets_constants.dart';
 import 'package:twitter/core/enums/tweet_type_enum.dart';
 import 'package:twitter/features/auth/controller/auth_controller.dart';
 import 'package:twitter/features/tweet/controller/tweet_controller.dart';
@@ -26,9 +26,9 @@ class TweetCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final curentUser = ref.watch(currentUserDetailsProvider).value;
+    final currentUser = ref.watch(currentUserDetailsProvider).value;
 
-    return curentUser == null
+    return currentUser == null
         ? const SizedBox()
         : ref.watch(userDetailsProvider(tweet.uid)).when(
               data: (user) {
@@ -48,7 +48,9 @@ class TweetCard extends ConsumerWidget {
                             margin: const EdgeInsets.all(10),
                             child: GestureDetector(
                               onTap: () {
-                                Navigator.push(context, UserProfileView.route(user),
+                                Navigator.push(
+                                  context,
+                                  UserProfileView.route(user),
                                 );
                               },
                               child: CircleAvatar(
@@ -69,9 +71,7 @@ class TweetCard extends ConsumerWidget {
                                         color: Pallete.greyColor,
                                         height: 20,
                                       ),
-                                      const SizedBox(
-                                        width: 2,
-                                      ),
+                                      const SizedBox(width: 2),
                                       Text(
                                         '${tweet.retweetedBy} retweeted',
                                         style: const TextStyle(
@@ -79,13 +79,15 @@ class TweetCard extends ConsumerWidget {
                                           fontSize: 16,
                                           fontWeight: FontWeight.w500,
                                         ),
-                                      )
+                                      ),
                                     ],
                                   ),
                                 Row(
                                   children: [
                                     Container(
-                                      margin: const EdgeInsets.only(right: 5),
+                                      margin: EdgeInsets.only(
+                                        right: user.isTwitterBlue ? 1 : 5,
+                                      ),
                                       child: Text(
                                         user.name,
                                         style: const TextStyle(
@@ -94,8 +96,16 @@ class TweetCard extends ConsumerWidget {
                                         ),
                                       ),
                                     ),
+                                    if (user.isTwitterBlue)
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 5.0),
+                                        child: SvgPicture.asset(
+                                          AssetsConstants.verifiedIcon,
+                                        ),
+                                      ),
                                     Text(
-                                      '@${user.name} . ${timeago.format(
+                                      '@${user.name} · ${timeago.format(
                                         tweet.tweetedAt,
                                         locale: 'en_short',
                                       )}',
@@ -121,21 +131,22 @@ class TweetCard extends ConsumerWidget {
                                               .value;
                                           return RichText(
                                             text: TextSpan(
-                                                text: 'Replying to ',
-                                                style: const TextStyle(
-                                                  color: Pallete.greyColor,
-                                                  fontSize: 16,
-                                                ),
-                                                children: [
-                                                  TextSpan(
-                                                    text:
-                                                        ' @${replyingToUser?.name}',
-                                                    style: const TextStyle(
-                                                      color: Pallete.blueColor,
-                                                      fontSize: 16,
-                                                    ),
+                                              text: 'Replying to',
+                                              style: const TextStyle(
+                                                color: Pallete.greyColor,
+                                                fontSize: 16,
+                                              ),
+                                              children: [
+                                                TextSpan(
+                                                  text:
+                                                      ' @${replyingToUser?.name}',
+                                                  style: const TextStyle(
+                                                    color: Pallete.blueColor,
+                                                    fontSize: 16,
                                                   ),
-                                                ]),
+                                                ),
+                                              ],
+                                            ),
                                           );
                                         },
                                         error: (error, st) => ErrorText(
@@ -184,9 +195,9 @@ class TweetCard extends ConsumerWidget {
                                           ref
                                               .read(tweetControllerProvider
                                                   .notifier)
-                                              .ReshareTweet(
+                                              .reshareTweet(
                                                 tweet,
-                                                curentUser,
+                                                currentUser,
                                                 context,
                                               );
                                         },
@@ -197,9 +208,14 @@ class TweetCard extends ConsumerWidget {
                                           ref
                                               .read(tweetControllerProvider
                                                   .notifier)
-                                              .likeTweet(tweet, curentUser);
+                                              .likeTweet(
+                                                tweet,
+                                                currentUser,
+                                              );
                                           return !isLiked;
                                         },
+                                        isLiked: tweet.likes
+                                            .contains(currentUser.uid),
                                         likeBuilder: (isLiked) {
                                           return isLiked
                                               ? SvgPicture.asset(
@@ -238,7 +254,7 @@ class TweetCard extends ConsumerWidget {
                                           size: 25,
                                           color: Pallete.greyColor,
                                         ),
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -248,9 +264,7 @@ class TweetCard extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const Divider(
-                        color: Pallete.greyColor,
-                      ),
+                      const Divider(color: Pallete.greyColor),
                     ],
                   ),
                 );

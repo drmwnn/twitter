@@ -37,8 +37,8 @@ class UserAPI implements IUserAPI {
   FutureEitherVoid saveUserData(UserModel userModel) async {
     try {
       await _db.createDocument(
-        databaseId: AppwriterConstants.databaseId,
-        collectionId: AppwriterConstants.userCollection,
+        databaseId: AppwriteConstants.databaseId,
+        collectionId: AppwriteConstants.usersCollection,
         documentId: userModel.uid,
         data: userModel.toMap(),
       );
@@ -58,8 +58,8 @@ class UserAPI implements IUserAPI {
   @override
   Future<model.Document> getUserData(String uid) {
     return _db.getDocument(
-      databaseId: AppwriterConstants.databaseId,
-      collectionId: AppwriterConstants.userCollection,
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.usersCollection,
       documentId: uid,
     );
   }
@@ -67,12 +67,13 @@ class UserAPI implements IUserAPI {
   @override
   Future<List<model.Document>> searchUserByName(String name) async {
     final documents = await _db.listDocuments(
-      databaseId: AppwriterConstants.databaseId,
-      collectionId: AppwriterConstants.userCollection,
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.usersCollection,
       queries: [
         Query.search('name', name),
       ],
     );
+
     return documents.documents;
   }
 
@@ -80,8 +81,8 @@ class UserAPI implements IUserAPI {
   FutureEitherVoid updateUserData(UserModel userModel) async {
     try {
       await _db.updateDocument(
-        databaseId: AppwriterConstants.databaseId,
-        collectionId: AppwriterConstants.userCollection,
+        databaseId: AppwriteConstants.databaseId,
+        collectionId: AppwriteConstants.usersCollection,
         documentId: userModel.uid,
         data: userModel.toMap(),
       );
@@ -101,7 +102,7 @@ class UserAPI implements IUserAPI {
   @override
   Stream<RealtimeMessage> getLatestUserProfileData() {
     return _realtime.subscribe([
-      'databases.${AppwriterConstants.databaseId}.collections.${AppwriterConstants.userCollection}.documents'
+      'databases.${AppwriteConstants.databaseId}.collections.${AppwriteConstants.usersCollection}.documents'
     ]).stream;
   }
 
@@ -109,8 +110,8 @@ class UserAPI implements IUserAPI {
   FutureEitherVoid followUser(UserModel user) async {
     try {
       await _db.updateDocument(
-        databaseId: AppwriterConstants.databaseId,
-        collectionId: AppwriterConstants.userCollection,
+        databaseId: AppwriteConstants.databaseId,
+        collectionId: AppwriteConstants.usersCollection,
         documentId: user.uid,
         data: {
           'followers': user.followers,
@@ -133,8 +134,8 @@ class UserAPI implements IUserAPI {
   FutureEitherVoid addToFollowing(UserModel user) async {
     try {
       await _db.updateDocument(
-        databaseId: AppwriterConstants.databaseId,
-        collectionId: AppwriterConstants.userCollection,
+        databaseId: AppwriteConstants.databaseId,
+        collectionId: AppwriteConstants.usersCollection,
         documentId: user.uid,
         data: {
           'following': user.following,

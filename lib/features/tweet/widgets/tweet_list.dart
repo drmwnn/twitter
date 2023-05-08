@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter/common/error_page.dart';
 import 'package:twitter/common/loading_page.dart';
-import 'package:twitter/constants/appwriter_constants.dart';
+import 'package:twitter/constants/appwrite_constants.dart';
 import 'package:twitter/features/tweet/controller/tweet_controller.dart';
 import 'package:twitter/features/tweet/widgets/tweet_card.dart';
 import 'package:twitter/models/tweet_model.dart';
@@ -17,19 +17,19 @@ class TweetList extends ConsumerWidget {
             return ref.watch(getLatestTweetProvider).when(
                   data: (data) {
                     if (data.events.contains(
-                      'databases.*.collections.${AppwriterConstants.tweetsCollection}.documents.*.create',
+                      'databases.*.collections.${AppwriteConstants.tweetsCollection}.documents.*.create',
                     )) {
                       tweets.insert(0, Tweet.fromMap(data.payload));
                     } else if (data.events.contains(
-                      'databases.*.collections.${AppwriterConstants.tweetsCollection}.documents.*.update',
+                      'databases.*.collections.${AppwriteConstants.tweetsCollection}.documents.*.update',
                     )) {
-                      //get id of the tweet
+                      // get id of original tweet
                       final startingPoint =
                           data.events[0].lastIndexOf('documents.');
                       final endPoint = data.events[0].lastIndexOf('.update');
                       final tweetId = data.events[0]
                           .substring(startingPoint + 10, endPoint);
-                      
+
                       var tweet = tweets
                           .where((element) => element.id == tweetId)
                           .first;
@@ -49,7 +49,7 @@ class TweetList extends ConsumerWidget {
                       },
                     );
                   },
-                  error: (error, StackTrace) => ErrorText(
+                  error: (error, stackTrace) => ErrorText(
                     error: error.toString(),
                   ),
                   loading: () {
@@ -63,7 +63,7 @@ class TweetList extends ConsumerWidget {
                   },
                 );
           },
-          error: (error, StackTrace) => ErrorText(
+          error: (error, stackTrace) => ErrorText(
             error: error.toString(),
           ),
           loading: () => const Loader(),

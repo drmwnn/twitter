@@ -13,6 +13,7 @@ class FollowCount extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double fontSize = 18;
+
     return Row(
       children: [
         Text(

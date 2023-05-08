@@ -2,7 +2,7 @@ import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:twitter/constants/appwriter_constants.dart';
+import 'package:twitter/constants/appwrite_constants.dart';
 import 'package:twitter/core/core.dart';
 import 'package:twitter/core/providers.dart';
 import 'package:twitter/models/tweet_model.dart';
@@ -23,6 +23,7 @@ abstract class ITweetAPI {
   Future<List<Document>> getRepliesToTweet(Tweet tweet);
   Future<Document> getTweetById(String id);
   Future<List<Document>> getUserTweets(String uid);
+  Future<List<Document>> getTweetsByHashtag(String hashtag);
 }
 
 class TweetAPI implements ITweetAPI {
@@ -36,8 +37,8 @@ class TweetAPI implements ITweetAPI {
   FutureEither<Document> shareTweet(Tweet tweet) async {
     try {
       final document = await _db.createDocument(
-        databaseId: AppwriterConstants.databaseId,
-        collectionId: AppwriterConstants.tweetsCollection,
+        databaseId: AppwriteConstants.databaseId,
+        collectionId: AppwriteConstants.tweetsCollection,
         documentId: ID.unique(),
         data: tweet.toMap(),
       );
@@ -57,18 +58,19 @@ class TweetAPI implements ITweetAPI {
   @override
   Future<List<Document>> getTweets() async {
     final documents = await _db.listDocuments(
-        databaseId: AppwriterConstants.databaseId,
-        collectionId: AppwriterConstants.tweetsCollection,
-        queries: [
-          Query.orderDesc('tweetedAt'),
-        ]);
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.tweetsCollection,
+      queries: [
+        Query.orderDesc('tweetedAt'),
+      ],
+    );
     return documents.documents;
   }
 
   @override
   Stream<RealtimeMessage> getLatestTweet() {
     return _realtime.subscribe([
-      'databases.${AppwriterConstants.databaseId}.collections.${AppwriterConstants.tweetsCollection}.documents'
+      'databases.${AppwriteConstants.databaseId}.collections.${AppwriteConstants.tweetsCollection}.documents'
     ]).stream;
   }
 
@@ -76,8 +78,8 @@ class TweetAPI implements ITweetAPI {
   FutureEither<Document> likeTweet(Tweet tweet) async {
     try {
       final document = await _db.updateDocument(
-        databaseId: AppwriterConstants.databaseId,
-        collectionId: AppwriterConstants.tweetsCollection,
+        databaseId: AppwriteConstants.databaseId,
+        collectionId: AppwriteConstants.tweetsCollection,
         documentId: tweet.id,
         data: {
           'likes': tweet.likes,
@@ -100,8 +102,8 @@ class TweetAPI implements ITweetAPI {
   FutureEither<Document> updateReshareCount(Tweet tweet) async {
     try {
       final document = await _db.updateDocument(
-        databaseId: AppwriterConstants.databaseId,
-        collectionId: AppwriterConstants.tweetsCollection,
+        databaseId: AppwriteConstants.databaseId,
+        collectionId: AppwriteConstants.tweetsCollection,
         documentId: tweet.id,
         data: {
           'reshareCount': tweet.reshareCount,
@@ -123,8 +125,8 @@ class TweetAPI implements ITweetAPI {
   @override
   Future<List<Document>> getRepliesToTweet(Tweet tweet) async {
     final document = await _db.listDocuments(
-      databaseId: AppwriterConstants.databaseId,
-      collectionId: AppwriterConstants.tweetsCollection,
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.tweetsCollection,
       queries: [
         Query.equal('repliedTo', tweet.id),
       ],
@@ -135,8 +137,8 @@ class TweetAPI implements ITweetAPI {
   @override
   Future<Document> getTweetById(String id) async {
     return _db.getDocument(
-      databaseId: AppwriterConstants.databaseId,
-      collectionId: AppwriterConstants.tweetsCollection,
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.tweetsCollection,
       documentId: id,
     );
   }
@@ -144,10 +146,22 @@ class TweetAPI implements ITweetAPI {
   @override
   Future<List<Document>> getUserTweets(String uid) async {
     final documents = await _db.listDocuments(
-      databaseId: AppwriterConstants.databaseId,
-      collectionId: AppwriterConstants.tweetsCollection,
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.tweetsCollection,
       queries: [
         Query.equal('uid', uid),
+      ],
+    );
+    return documents.documents;
+  }
+
+  @override
+  Future<List<Document>> getTweetsByHashtag(String hashtag) async {
+    final documents = await _db.listDocuments(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.tweetsCollection,
+      queries: [
+        Query.search('hashtags', hashtag),
       ],
     );
     return documents.documents;

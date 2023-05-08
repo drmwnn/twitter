@@ -18,12 +18,12 @@ class StorageAPI {
     List<String> imageLinks = [];
     for (final file in files) {
       final uploadedImage = await _storage.createFile(
-        bucketId: AppwriterConstants.imagesBucket,
+        bucketId: AppwriteConstants.imagesBucket,
         fileId: ID.unique(),
         file: InputFile(path: file.path),
       );
       imageLinks.add(
-        AppwriterConstants.imageUrl(uploadedImage.$id),
+        AppwriteConstants.imageUrl(uploadedImage.$id),
       );
     }
     return imageLinks;

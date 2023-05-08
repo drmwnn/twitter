@@ -77,7 +77,6 @@ class Tweet {
     result.addAll({'tweetedAt': tweetedAt.millisecondsSinceEpoch});
     result.addAll({'likes': likes});
     result.addAll({'commentIds': commentIds});
-    result.addAll({'id': id});
     result.addAll({'reshareCount': reshareCount});
     result.addAll({'retweetedBy': retweetedBy});
     result.addAll({'repliedTo': repliedTo});
